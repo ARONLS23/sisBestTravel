@@ -1,9 +1,7 @@
 package com.arrows_ls.best_travel.api.controllers;
 
 import com.arrows_ls.best_travel.api.models.request.ReservationRequest;
-import com.arrows_ls.best_travel.api.models.request.TicketRequest;
 import com.arrows_ls.best_travel.api.models.response.ReservationResponse;
-import com.arrows_ls.best_travel.api.models.response.TicketResponse;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.IReservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
