@@ -7,12 +7,12 @@ import java.util.UUID;
 
 public interface ITourService extends SimpleCrudService <TourRequest, TourResponse, Long>{
 
-    void deleteTicket(UUID ticketId, Long tourId);
+    void removeTicket(Long tourId, UUID ticketId);
 
-    UUID addTicket(Long flyId, Long tourId);
+    UUID addTicket(Long tourId, Long flyId);
 
-    void deleteReservation(UUID reservationId, Long tourId);
+    void removeReservation(Long tourId, UUID reservationId);
 
-    UUID addReservation(Long reservationId, Long tourId);
+    UUID addReservation(Long tourId, Long reservationId);
 
 }
