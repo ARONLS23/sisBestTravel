@@ -44,7 +44,7 @@ public class TourHelper {
         return response;
     }
 
-    public Set<ReservationEntity> createReservation(HashMap<HotelEntity, Integer> hotels, CustomerEntity customer){
+    public Set<ReservationEntity> createReservations(HashMap<HotelEntity, Integer> hotels, CustomerEntity customer){
         var response = new HashSet<ReservationEntity>(hotels.size());
         hotels.forEach((hotel, totalDays) -> {
             var reservationToPersist = ReservationEntity.builder()
@@ -73,6 +73,20 @@ public class TourHelper {
                 .departureDate(BestTravelUtil.getRandomSoon())
                 .build();
         return this.ticketRepository.save(ticketToPersist);
+    }
+
+    public ReservationEntity createReservation(HotelEntity hotel, CustomerEntity customer, Integer totalDays){
+        var reservationToPersist = ReservationEntity.builder()
+                .id(UUID.randomUUID())
+                .hotel(hotel)
+                .customer(customer)
+                .dateTimeReservation(LocalDateTime.now())
+                .dateStart(LocalDate.now())
+                .dateEnd(LocalDate.now().plusDays(totalDays))
+                .totalDays(totalDays)
+                .price(hotel.getPrice().add(hotel.getPrice().multiply(ReservationService.charges_price_percentage)))
+                .build();
+        return this.reservationRepository.save(reservationToPersist);
     }
 
 }

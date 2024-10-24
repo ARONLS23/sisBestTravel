@@ -13,6 +13,6 @@ public interface ITourService extends SimpleCrudService <TourRequest, TourRespon
 
     void removeReservation(Long tourId, UUID reservationId);
 
-    UUID addReservation(Long tourId, Long reservationId);
+    UUID addReservation(Long tourId, Long hotelId, Integer totalDays);
 
 }

@@ -39,7 +39,7 @@ public class TourService implements ITourService {
 
         var tourToSave = TourEntity.builder()
                 .tickets(this.tourHelper.createTickets(flights, customer))
-                .reservations(this.tourHelper.createReservation(hotels, customer))
+                .reservations(this.tourHelper.createReservations(hotels, customer))
                 .customer(customer)
                 .build();/*Construir el objeto*/
 
@@ -78,7 +78,7 @@ public class TourService implements ITourService {
     public UUID addTicket(Long tourId, Long flyId) {
         var tourUpdate = this.tourRepository.findById(tourId).orElseThrow();
         var fly = this.flyRepository.findById(flyId).orElseThrow();
-        var ticket = this.tourHelper.createTicket(fly,tourUpdate.getCustomer());
+        var ticket = this.tourHelper.createTicket(fly, tourUpdate.getCustomer());
         tourUpdate.addTicket(ticket);
         this.tourRepository.save(tourUpdate);
         return ticket.getId();
@@ -86,11 +86,18 @@ public class TourService implements ITourService {
 
     @Override
     public void removeReservation(Long tourId, UUID reservationId) {
-
+        var tourUpdate = this.tourRepository.findById(tourId).orElseThrow();
+        tourUpdate.removeReservation(reservationId);
+        this.tourRepository.save(tourUpdate);
     }
 
     @Override
-    public UUID addReservation(Long tourId, Long reservationId) {
-        return null;
+    public UUID addReservation(Long tourId, Long hotelId, Integer totalDays) {
+        var tourUpdate = this.tourRepository.findById(tourId).orElseThrow();
+        var hotel = this.hotelRepository.findById(hotelId).orElseThrow();
+        var reservation = this.tourHelper.createReservation(hotel, tourUpdate.getCustomer(), totalDays);
+        tourUpdate.addReservation(reservation);
+        this.tourRepository.save(tourUpdate);
+        return reservation.getId();
     }
 }
