@@ -8,6 +8,7 @@ import com.arrows_ls.best_travel.domain.repositories.CustomerRepository;
 import com.arrows_ls.best_travel.domain.repositories.HotelRepository;
 import com.arrows_ls.best_travel.domain.repositories.ReservationRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.IReservationService;
+import com.arrows_ls.best_travel.infraestructure.helpers.CustomerHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +29,7 @@ public class ReservationService implements IReservationService {
     private final CustomerRepository customerRepository;
     private final ReservationRepository reservationRepository;
     private final HotelRepository hotelRepository;
+    private final CustomerHelper customerHelper;
 
     @Override
     public ReservationResponse create(ReservationRequest request) {
@@ -46,6 +48,8 @@ public class ReservationService implements IReservationService {
                 .build();
 
         var reservationToPersisted = this.reservationRepository.save(reservationToPersist);
+
+        this.customerHelper.increase(customer.getDni(), ReservationService.class);
 
         log.info("Reservation saved with id: {}", reservationToPersisted.getId());
 

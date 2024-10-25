@@ -3,11 +3,13 @@ package com.arrows_ls.best_travel.infraestructure.services;
 import com.arrows_ls.best_travel.api.models.request.TicketRequest;
 import com.arrows_ls.best_travel.api.models.response.FlyResponse;
 import com.arrows_ls.best_travel.api.models.response.TicketResponse;
+import com.arrows_ls.best_travel.domain.entities.CustomerEntity;
 import com.arrows_ls.best_travel.domain.entities.TicketEntity;
 import com.arrows_ls.best_travel.domain.repositories.CustomerRepository;
 import com.arrows_ls.best_travel.domain.repositories.FlyRepository;
 import com.arrows_ls.best_travel.domain.repositories.TicketRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.ITicketService;
+import com.arrows_ls.best_travel.infraestructure.helpers.CustomerHelper;
 import com.arrows_ls.best_travel.util.BestTravelUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class TicketService implements ITicketService {
     private final FlyRepository flyRepository;
     private final CustomerRepository customerRepository;
     private final TicketRepository ticketRepository;
+    private final CustomerHelper customerHelper;
 
     @Override
     public TicketResponse create(TicketRequest request) {
@@ -45,6 +48,8 @@ public class TicketService implements ITicketService {
                 .build();
 
         var ticketPersisted = this.ticketRepository.save(ticketToPersist);
+
+        this.customerHelper.increase(customer.getDni(), TicketService.class);
 
         log.info("Ticket saved with id: {}", ticketPersisted.getId());
 
