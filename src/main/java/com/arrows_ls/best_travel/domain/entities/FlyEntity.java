@@ -1,6 +1,6 @@
 package com.arrows_ls.best_travel.domain.entities;
 
-import com.arrows_ls.best_travel.util.AeroLine;
+import com.arrows_ls.best_travel.util.enums.AeroLine;
 import jakarta.persistence.*;
 import lombok.*;
 

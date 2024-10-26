@@ -2,7 +2,7 @@ package com.arrows_ls.best_travel.api.controllers;
 
 import com.arrows_ls.best_travel.api.models.response.HotelResponse;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.IHotelService;
-import com.arrows_ls.best_travel.util.SortType;
+import com.arrows_ls.best_travel.util.enums.SortType;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

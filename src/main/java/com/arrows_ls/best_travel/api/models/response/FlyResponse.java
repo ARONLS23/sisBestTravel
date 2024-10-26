@@ -1,6 +1,6 @@
 package com.arrows_ls.best_travel.api.models.response;
 
-import com.arrows_ls.best_travel.util.AeroLine;
+import com.arrows_ls.best_travel.util.enums.AeroLine;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

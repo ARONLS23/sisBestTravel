@@ -3,6 +3,7 @@ package com.arrows_ls.best_travel.api.controllers;
 import com.arrows_ls.best_travel.api.models.request.TicketRequest;
 import com.arrows_ls.best_travel.api.models.response.TicketResponse;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.ITicketService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class TicketController {
     private final ITicketService ticketService;
 
     @PostMapping
-    public ResponseEntity<TicketResponse> post(@RequestBody TicketRequest request){
+    public ResponseEntity<TicketResponse> post(@Valid @RequestBody TicketRequest request){
         return ResponseEntity.ok(ticketService.create(request));
     }
 
@@ -30,7 +31,7 @@ public class TicketController {
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<TicketResponse> put(@PathVariable UUID id, @RequestBody TicketRequest request){
+    public ResponseEntity<TicketResponse> put(@PathVariable UUID id, @Valid @RequestBody TicketRequest request){
         return ResponseEntity.ok(this.ticketService.update(request, id));
     }
 

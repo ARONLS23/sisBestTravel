@@ -4,7 +4,7 @@ import com.arrows_ls.best_travel.api.models.response.FlyResponse;
 import com.arrows_ls.best_travel.domain.entities.FlyEntity;
 import com.arrows_ls.best_travel.domain.repositories.FlyRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.IFlyService;
-import com.arrows_ls.best_travel.util.SortType;
+import com.arrows_ls.best_travel.util.enums.SortType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
