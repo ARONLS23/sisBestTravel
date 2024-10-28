@@ -8,6 +8,7 @@ import com.arrows_ls.best_travel.domain.repositories.CustomerRepository;
 import com.arrows_ls.best_travel.domain.repositories.FlyRepository;
 import com.arrows_ls.best_travel.domain.repositories.TicketRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.ITicketService;
+import com.arrows_ls.best_travel.infraestructure.helpers.ApiCurrencyConnectorHelper;
 import com.arrows_ls.best_travel.infraestructure.helpers.BlackListHelper;
 import com.arrows_ls.best_travel.infraestructure.helpers.CustomerHelper;
 import com.arrows_ls.best_travel.util.BestTravelUtil;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Currency;
 import java.util.UUID;
 
 @Transactional
@@ -34,6 +36,7 @@ public class TicketService implements ITicketService {
     private final TicketRepository ticketRepository;
     private final CustomerHelper customerHelper;
     private final BlackListHelper blackListHelper;
+    private final ApiCurrencyConnectorHelper currencyConnectorHelper;
 
     @Override
     public TicketResponse create(TicketRequest request) {
@@ -90,9 +93,13 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public BigDecimal findPrice(Long flyId) {
+    public BigDecimal findPrice(Long flyId, Currency currency) {
         var fly = this.flyRepository.findById(flyId).orElseThrow(() -> new IdNotFoundException(Tables.fly.name()));
-        return fly.getPrice().add(fly.getPrice().multiply(charger_price_percentage));
+        var priceInDollars = fly.getPrice().add(fly.getPrice().multiply(charger_price_percentage));
+        if (currency.equals(Currency.getInstance("USD"))) return priceInDollars;
+        var currencyDTO = this.currencyConnectorHelper.getCurrency(currency);
+        log.info("API currency in {}, response: {}", currencyDTO.getExChangeDate().toString(), currencyDTO.getRates());
+        return priceInDollars.multiply(currencyDTO.getRates().get(currency));
     }
 
     private TicketResponse entityToResponse(TicketEntity entity) {

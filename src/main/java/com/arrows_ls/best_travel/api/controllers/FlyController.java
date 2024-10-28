@@ -6,9 +6,11 @@ import com.arrows_ls.best_travel.util.enums.SortType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -16,11 +18,18 @@ import java.util.Set;
 
 @RestController
 @RequestMapping(path = "fly")
-@AllArgsConstructor
 @Tag(name = "Fly")
+@AllArgsConstructor
 public class FlyController {
 
     private final IFlyService flyService;
+    //private final WebClient webClient;
+
+    /*Add Qualifier (Mas de una web client)
+    public FlyController(IFlyService flyService, @Qualifier(value = "base") WebClient webClient) {
+        this.flyService = flyService;
+        this.webClient = webClient;
+    }*/
 
     @Operation(summary = "Return a page with flights can be sorted or not")
     @GetMapping

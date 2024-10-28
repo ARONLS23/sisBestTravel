@@ -11,13 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "reservation")
@@ -25,6 +25,7 @@ import java.util.UUID;
 @Tag(name = "Reservation")
 public class ReservationController {
 
+    private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
     private final IReservationService reservationService;
 
     @ApiResponse(
@@ -61,8 +62,11 @@ public class ReservationController {
 
     @Operation(summary = "return a reservation price given a hotel id")
     @GetMapping
-    public ResponseEntity<Map<String, BigDecimal>> geHotelPrice(@RequestParam Long hotelId){
-        return ResponseEntity.ok(Collections.singletonMap("hotelPrice", this.reservationService.findPrice(hotelId)));
+    public ResponseEntity<Map<String, BigDecimal>> getReservationPrice(
+            @RequestParam Long hotelId,
+            @RequestHeader(required = false) Currency currency) {
+        if (Objects.isNull(currency)) currency = Currency.getInstance("USD");
+        return ResponseEntity.ok(Collections.singletonMap("reservationPrice", this.reservationService.findPrice(hotelId, currency)));
     }
 
 }
