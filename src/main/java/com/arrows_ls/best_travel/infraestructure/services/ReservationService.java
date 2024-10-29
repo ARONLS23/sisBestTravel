@@ -11,6 +11,7 @@ import com.arrows_ls.best_travel.infraestructure.abstract_services.IReservationS
 import com.arrows_ls.best_travel.infraestructure.helpers.ApiCurrencyConnectorHelper;
 import com.arrows_ls.best_travel.infraestructure.helpers.BlackListHelper;
 import com.arrows_ls.best_travel.infraestructure.helpers.CustomerHelper;
+import com.arrows_ls.best_travel.infraestructure.helpers.EmailHelper;
 import com.arrows_ls.best_travel.util.enums.Tables;
 import com.arrows_ls.best_travel.util.exceptions.IdNotFoundException;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Currency;
+import java.util.Objects;
 import java.util.UUID;
 
 @Transactional
@@ -37,6 +39,7 @@ public class ReservationService implements IReservationService {
     private final CustomerHelper customerHelper;
     private final BlackListHelper blackListHelper;
     private final ApiCurrencyConnectorHelper currencyConnectorHelper;
+    private final EmailHelper emailHelper;
 
     @Override
     public ReservationResponse create(ReservationRequest request) {
@@ -58,6 +61,8 @@ public class ReservationService implements IReservationService {
         var reservationToPersisted = this.reservationRepository.save(reservationToPersist);
 
         this.customerHelper.increase(customer.getDni(), ReservationService.class);
+
+        if(Objects.nonNull(request.getEmail())) this.emailHelper.sendEmail(request.getEmail(), customer.getFullName(), Tables.reservation.name());
 
         log.info("Reservation saved with id: {}", reservationToPersisted.getId());
 

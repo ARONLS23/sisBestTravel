@@ -11,6 +11,7 @@ import com.arrows_ls.best_travel.infraestructure.abstract_services.ITicketServic
 import com.arrows_ls.best_travel.infraestructure.helpers.ApiCurrencyConnectorHelper;
 import com.arrows_ls.best_travel.infraestructure.helpers.BlackListHelper;
 import com.arrows_ls.best_travel.infraestructure.helpers.CustomerHelper;
+import com.arrows_ls.best_travel.infraestructure.helpers.EmailHelper;
 import com.arrows_ls.best_travel.util.BestTravelUtil;
 import com.arrows_ls.best_travel.util.enums.Tables;
 import com.arrows_ls.best_travel.util.exceptions.IdNotFoundException;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Currency;
+import java.util.Objects;
 import java.util.UUID;
 
 @Transactional
@@ -37,6 +39,7 @@ public class TicketService implements ITicketService {
     private final CustomerHelper customerHelper;
     private final BlackListHelper blackListHelper;
     private final ApiCurrencyConnectorHelper currencyConnectorHelper;
+    private final EmailHelper emailHelper;
 
     @Override
     public TicketResponse create(TicketRequest request) {
@@ -57,6 +60,8 @@ public class TicketService implements ITicketService {
         var ticketPersisted = this.ticketRepository.save(ticketToPersist);
 
         this.customerHelper.increase(customer.getDni(), TicketService.class);
+
+        if(Objects.nonNull(request.getEmail())) this.emailHelper.sendEmail(request.getEmail(), customer.getFullName(), Tables.ticket.name());
 
         log.info("Ticket saved with id: {}", ticketPersisted.getId());
 
