@@ -1,4 +1,4 @@
-package com.arrows_ls.best_travel.domain.entities;
+package com.arrows_ls.best_travel.domain.entities.jpa;
 
 import com.arrows_ls.best_travel.util.enums.AeroLine;
 import jakarta.persistence.*;

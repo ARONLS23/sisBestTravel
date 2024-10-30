@@ -2,11 +2,11 @@ package com.arrows_ls.best_travel.infraestructure.services;
 
 import com.arrows_ls.best_travel.api.models.request.TourRequest;
 import com.arrows_ls.best_travel.api.models.response.TourResponse;
-import com.arrows_ls.best_travel.domain.entities.*;
-import com.arrows_ls.best_travel.domain.repositories.CustomerRepository;
-import com.arrows_ls.best_travel.domain.repositories.FlyRepository;
-import com.arrows_ls.best_travel.domain.repositories.HotelRepository;
-import com.arrows_ls.best_travel.domain.repositories.TourRepository;
+import com.arrows_ls.best_travel.domain.entities.jpa.*;
+import com.arrows_ls.best_travel.domain.repositories.jpa.CustomerRepository;
+import com.arrows_ls.best_travel.domain.repositories.jpa.FlyRepository;
+import com.arrows_ls.best_travel.domain.repositories.jpa.HotelRepository;
+import com.arrows_ls.best_travel.domain.repositories.jpa.TourRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.ITourService;
 import com.arrows_ls.best_travel.infraestructure.helpers.BlackListHelper;
 import com.arrows_ls.best_travel.infraestructure.helpers.CustomerHelper;

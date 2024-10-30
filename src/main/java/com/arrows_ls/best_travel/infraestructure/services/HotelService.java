@@ -1,8 +1,8 @@
 package com.arrows_ls.best_travel.infraestructure.services;
 
 import com.arrows_ls.best_travel.api.models.response.HotelResponse;
-import com.arrows_ls.best_travel.domain.entities.HotelEntity;
-import com.arrows_ls.best_travel.domain.repositories.HotelRepository;
+import com.arrows_ls.best_travel.domain.entities.jpa.HotelEntity;
+import com.arrows_ls.best_travel.domain.repositories.jpa.HotelRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.IHotelService;
 import com.arrows_ls.best_travel.util.constants.CacheConstants;
 import com.arrows_ls.best_travel.util.enums.SortType;

@@ -1,8 +1,8 @@
 package com.arrows_ls.best_travel.infraestructure.helpers;
 
-import com.arrows_ls.best_travel.domain.entities.*;
-import com.arrows_ls.best_travel.domain.repositories.ReservationRepository;
-import com.arrows_ls.best_travel.domain.repositories.TicketRepository;
+import com.arrows_ls.best_travel.domain.entities.jpa.*;
+import com.arrows_ls.best_travel.domain.repositories.jpa.ReservationRepository;
+import com.arrows_ls.best_travel.domain.repositories.jpa.TicketRepository;
 import com.arrows_ls.best_travel.infraestructure.services.ReservationService;
 import com.arrows_ls.best_travel.infraestructure.services.TicketService;
 import com.arrows_ls.best_travel.util.BestTravelUtil;

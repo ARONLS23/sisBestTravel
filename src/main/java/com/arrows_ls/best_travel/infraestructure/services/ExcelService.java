@@ -1,7 +1,7 @@
 package com.arrows_ls.best_travel.infraestructure.services;
 
-import com.arrows_ls.best_travel.domain.entities.CustomerEntity;
-import com.arrows_ls.best_travel.domain.repositories.CustomerRepository;
+import com.arrows_ls.best_travel.domain.entities.jpa.CustomerEntity;
+import com.arrows_ls.best_travel.domain.repositories.jpa.CustomerRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.ReportService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;

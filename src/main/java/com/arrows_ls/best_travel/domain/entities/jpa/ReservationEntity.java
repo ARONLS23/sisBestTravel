@@ -1,4 +1,4 @@
-package com.arrows_ls.best_travel.domain.entities;
+package com.arrows_ls.best_travel.domain.entities.jpa;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

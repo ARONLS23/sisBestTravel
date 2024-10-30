@@ -1,8 +1,8 @@
 package com.arrows_ls.best_travel.infraestructure.services;
 
 import com.arrows_ls.best_travel.api.models.response.FlyResponse;
-import com.arrows_ls.best_travel.domain.entities.FlyEntity;
-import com.arrows_ls.best_travel.domain.repositories.FlyRepository;
+import com.arrows_ls.best_travel.domain.entities.jpa.FlyEntity;
+import com.arrows_ls.best_travel.domain.repositories.jpa.FlyRepository;
 import com.arrows_ls.best_travel.infraestructure.abstract_services.IFlyService;
 import com.arrows_ls.best_travel.util.constants.CacheConstants;
 import com.arrows_ls.best_travel.util.enums.SortType;

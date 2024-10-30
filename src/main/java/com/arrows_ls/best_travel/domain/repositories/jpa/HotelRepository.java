@@ -1,6 +1,6 @@
-package com.arrows_ls.best_travel.domain.repositories;
+package com.arrows_ls.best_travel.domain.repositories.jpa;
 
-import com.arrows_ls.best_travel.domain.entities.HotelEntity;
+import com.arrows_ls.best_travel.domain.entities.jpa.HotelEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigDecimal;
