@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -37,6 +38,8 @@ public class FlyController {
             @RequestParam Integer page,
             @RequestParam Integer size,
             @RequestHeader(required = false) SortType sortType){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getAuthorities());
         if (Objects.isNull(sortType)) sortType = SortType.NONE;
         var response = this.flyService.realAll(page, size, sortType);
         return response.isEmpty()? ResponseEntity.noContent().build(): ResponseEntity.ok(response);

@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -24,6 +25,10 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
@@ -33,6 +38,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Configuration
@@ -98,7 +106,7 @@ public class SecurityConfig {
         var registeredClient = RegisteredClient
                 .withId(UUID.randomUUID().toString())
                 .clientId(clientId)
-                .clientSecret(clienteSecret)
+                .clientSecret(encoder.encode(clienteSecret))
                 .scope(scopeRead)
                 .scope(scopeWrite)
                 .redirectUri(redirectUri1)
@@ -139,6 +147,34 @@ public class SecurityConfig {
                 .build();
     }
 
+    @Bean
+    public JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter(){
+        var converter = new JwtGrantedAuthoritiesConverter();
+        converter.setAuthorityPrefix("");
+        return converter;
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter(JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter){
+        var converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        return converter;
+    }
+
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer(){
+        return context -> {
+            if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)){
+                context.getClaims().claims(clain -> {
+                    clain.putAll(Map.of(
+                            "owner", APPLICATION_OWNER,
+                            "date_request", LocalDateTime.now().toString()
+                    ));
+                });
+            }
+        };
+    }
+
     private static KeyPair generateRSA(){
         KeyPair keyPair = null;
         try {
@@ -164,5 +200,6 @@ public class SecurityConfig {
     private static final String[] ADMIN_RESOURCES = {"/user/**", "/report/**"};
     private static final String LOGIN_RESOURCE = "/login";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String APPLICATION_OWNER = "ARROWS";
 
 }
