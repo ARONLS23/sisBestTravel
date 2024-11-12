@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -38,8 +39,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.UUID;
 
@@ -66,6 +68,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
@@ -78,17 +81,30 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(2)
     public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .formLogin()
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(PUBLIC_RESOURCES).permitAll()
-                .requestMatchers(USER_RESOURCES).authenticated()
-                .requestMatchers(ADMIN_RESOURCES).hasRole(ROLE_ADMIN)
+                .requestMatchers(USER_RESOURCES).hasAuthority(AUTH_READ)
+                .requestMatchers(ADMIN_RESOURCES).hasAuthority(AUTH_WRITE)
                 .and()
                 .oauth2ResourceServer()
                 .jwt();
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(3)
+    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests()
+                .requestMatchers(PUBLIC_RESOURCES).permitAll()
+                .requestMatchers(USER_RESOURCES).hasAuthority(ROLE_USER)
+                .requestMatchers(ADMIN_RESOURCES).hasAuthority(ROLE_ADMIN);
 
         return http.build();
     }
@@ -143,6 +159,7 @@ public class SecurityConfig {
     @Bean
     public TokenSettings tokenSettings(){
         return TokenSettings.builder()
+                .accessTokenTimeToLive(Duration.ofHours(8))
                 .refreshTokenTimeToLive(Duration.ofHours(8))
                 .build();
     }
@@ -165,10 +182,15 @@ public class SecurityConfig {
     public OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer(){
         return context -> {
             if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)){
+                Instant expirationTime = LocalDateTime.now()
+                        .plusHours(8)
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant();
                 context.getClaims().claims(clain -> {
                     clain.putAll(Map.of(
                             "owner", APPLICATION_OWNER,
-                            "date_request", LocalDateTime.now().toString()
+                            "date_request", LocalDateTime.now().toString(),
+                            "exp", expirationTime
                     ));
                 });
             }
@@ -199,7 +221,10 @@ public class SecurityConfig {
     private static final String[] USER_RESOURCES = {"/tour/**","/ticket/**","/reservation/**"};
     private static final String[] ADMIN_RESOURCES = {"/user/**", "/report/**"};
     private static final String LOGIN_RESOURCE = "/login";
-    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String AUTH_WRITE = "write";
+    private static final String AUTH_READ = "read";
+    private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_USER = "USER";
     private static final String APPLICATION_OWNER = "ARROWS";
 
 }

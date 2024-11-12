@@ -76,9 +76,9 @@ public class AppUserService implements IModifyUserService, UserDetailsService {
         Set<GrantedAuthority> authorities = user.getRole()
                 .getGrantedAuthorities()
                 .stream()
-                .map(SimpleGrantedAuthority::new)
+                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))
                 .collect(Collectors.toSet());
-        System.out.println("Authority from db: " + authorities);
+        System.out.println("Authorities mapped for user " + user.getUsername() + ": " + authorities);
 
         return new User(
                 user.getUsername(),
